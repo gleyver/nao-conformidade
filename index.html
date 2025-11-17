@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Não Conformidades</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    screens: {
+                        'xs': '320px',
+                        '4k': '3840px',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body class="w-full min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-purple-600 p-2 sm:p-4 md:p-6 lg:px-5 lg:py-4 xl:px-5 xl:py-4 2xl:px-5 2xl:py-4 4k:px-5 4k:py-4">
+    <div class="fixed top-2 right-2 sm:top-4 sm:right-4 bg-black bg-opacity-60 text-white px-3 py-2 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm md:text-base z-[1000]" id="refreshIndicator">Carregando dados...</div>
+    
+    <div class="w-full min-h-screen flex flex-col gap-4 sm:gap-6 md:gap-8 lg:gap-6 xl:gap-8" id="mainContainer">
+        <h1 class="text-center text-white text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl 4k:text-9xl font-bold drop-shadow-lg mb-2 sm:mb-4 md:mb-6">Não Conformidades - RNC</h1>
+
+        <!-- Layout: Mobile em coluna, Desktop/TV em 2 colunas -->
+        <div class="flex flex-col lg:flex-row gap-4 sm:gap-6 md:gap-8 flex-1 min-h-0">
+            <!-- LADO ESQUERDO: Visão Geral (Desktop/TV) -->
+            <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-10 shadow-2xl flex flex-col lg:w-1/2 xl:w-2/5 2xl:w-2/5 4k:w-1/3">
+                <h2 class="text-center text-indigo-600 mb-4 sm:mb-6 md:mb-8 text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl 4k:text-6xl font-bold">Visão Geral</h2>
+                <div class="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-2 gap-2 sm:gap-4 md:gap-6 lg:gap-4 xl:gap-6 mb-4 sm:mb-6 md:mb-8">
+                    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-3 sm:p-4 md:p-6 lg:p-4 xl:p-6 2xl:p-8 4k:p-10 rounded-xl sm:rounded-2xl text-center shadow-lg">
+                        <div class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl 4k:text-7xl font-bold mb-1 sm:mb-2 drop-shadow-md" id="totalObras">0</div>
+                        <div class="text-xs xs:text-sm sm:text-base md:text-lg lg:text-base xl:text-lg 2xl:text-xl 4k:text-2xl opacity-95 font-semibold">Total de RNC</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-3 sm:p-4 md:p-6 lg:p-4 xl:p-6 2xl:p-8 4k:p-10 rounded-xl sm:rounded-2xl text-center shadow-lg">
+                        <div class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl 4k:text-7xl font-bold mb-1 sm:mb-2 drop-shadow-md" id="totalAbertas">0</div>
+                        <div class="text-xs xs:text-sm sm:text-base md:text-lg lg:text-base xl:text-lg 2xl:text-xl 4k:text-2xl opacity-95 font-semibold">Abertas</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-3 sm:p-4 md:p-6 lg:p-4 xl:p-6 2xl:p-8 4k:p-10 rounded-xl sm:rounded-2xl text-center shadow-lg">
+                        <div class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl 4k:text-7xl font-bold mb-1 sm:mb-2 drop-shadow-md" id="totalConcluidas">0</div>
+                        <div class="text-xs xs:text-sm sm:text-base md:text-lg lg:text-base xl:text-lg 2xl:text-xl 4k:text-2xl opacity-95 font-semibold">Concluídas</div>
+                    </div>
+                    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-3 sm:p-4 md:p-6 lg:p-4 xl:p-6 2xl:p-8 4k:p-10 rounded-xl sm:rounded-2xl text-center shadow-lg">
+                        <div class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-4xl xl:text-5xl 2xl:text-6xl 4k:text-7xl font-bold mb-1 sm:mb-2 drop-shadow-md" id="mediaPrazo">0</div>
+                        <div class="text-xs xs:text-sm sm:text-base md:text-lg lg:text-base xl:text-lg 2xl:text-xl 4k:text-2xl opacity-95 font-semibold">Prazo Médio (dias)</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-4 sm:gap-6 md:gap-8 lg:gap-4 xl:gap-6 flex-1 min-h-0">
+                    <div class="bg-gray-50 p-4 sm:p-6 md:p-8 lg:p-4 xl:p-6 2xl:p-8 rounded-xl sm:rounded-2xl min-h-[200px] sm:min-h-[250px] md:min-h-[300px] lg:min-h-[250px] xl:min-h-[300px] 2xl:min-h-[350px] 4k:min-h-[400px] flex flex-col">
+                        <div class="text-center text-indigo-600 text-base sm:text-lg md:text-xl lg:text-lg xl:text-xl 2xl:text-2xl 4k:text-3xl font-bold mb-3 sm:mb-4 md:mb-5">Gráfico de Abertura</div>
+                        <div class="flex-1 min-h-0">
+                            <canvas id="aberturaChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-4 sm:p-6 md:p-8 lg:p-4 xl:p-6 2xl:p-8 rounded-xl sm:rounded-2xl min-h-[200px] sm:min-h-[250px] md:min-h-[300px] lg:min-h-[250px] xl:min-h-[300px] 2xl:min-h-[350px] 4k:min-h-[400px] flex flex-col">
+                        <div class="text-center text-indigo-600 text-base sm:text-lg md:text-xl lg:text-lg xl:text-xl 2xl:text-2xl 4k:text-3xl font-bold mb-3 sm:mb-4 md:mb-5">Gráfico de Conclusão</div>
+                        <div class="flex-1 min-h-0">
+                            <canvas id="conclusaoChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LADO DIREITO: Detalhes das Obras (Desktop/TV) -->
+            <div class="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-10 shadow-2xl relative overflow-hidden flex-1 lg:w-1/2 xl:w-3/5 2xl:w-3/5 4k:w-2/3 min-h-0 flex flex-col">
+                <h2 class="text-center text-indigo-600 mb-4 sm:mb-6 md:mb-8 text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl 2xl:text-5xl 4k:text-6xl font-bold">Detalhes das Não Conformidades</h2>
+                <div class="relative flex-1 min-h-[300px] xs:min-h-[400px] sm:min-h-[500px] md:min-h-[600px] lg:min-h-0 overflow-hidden" id="slidesContainer">
+                    <!-- Slides serão inseridos via JavaScript -->
+                </div>
+                <button class="absolute top-1/2 -translate-y-1/2 left-4 sm:left-6 md:left-8 bg-white bg-opacity-25 backdrop-blur-md border-2 border-white border-opacity-40 text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl 4k:text-8xl w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 2xl:w-28 2xl:h-28 4k:w-36 4k:h-36 rounded-full cursor-pointer transition-all duration-300 z-10 flex items-center justify-center font-bold hover:bg-opacity-35 hover:scale-110 active:scale-95" onclick="previousSlide()">‹</button>
+                <button class="absolute top-1/2 -translate-y-1/2 right-4 sm:right-6 md:right-8 bg-white bg-opacity-25 backdrop-blur-md border-2 border-white border-opacity-40 text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl 4k:text-8xl w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24 2xl:w-28 2xl:h-28 4k:w-36 4k:h-36 rounded-full cursor-pointer transition-all duration-300 z-10 flex items-center justify-center font-bold hover:bg-opacity-35 hover:scale-110 active:scale-95" onclick="nextSlide()">›</button>
+                <div class="flex justify-center gap-2 sm:gap-3 md:gap-4 mt-4 sm:mt-6 md:mt-8" id="indicators">
+                    <!-- Indicadores serão inseridos via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Módulos JavaScript (ordem de dependência) -->
+    <script src="js/csvParser.js"></script>
+    <script src="js/dataMapper.js"></script>
+    <script src="js/imageHandler.js"></script>
+    <script src="js/dataFetcher.js"></script>
+    <script src="js/statsCalculator.js"></script>
+    <script src="js/chartsManager.js"></script>
+    <script src="js/slidesManager.js"></script>
+    <script src="js/app.js"></script>
+
+    <!-- Inicialização da aplicação -->
+    <script>
+        // Configuração da aplicação
+        const CONFIG = {
+            sheetId: '1Md5fP17bXGEEmRXlbsTTo68F9ILROsAD9iPisUoNJ6g',
+            gid: '1443492060'
+        };
+
+        // Inicializar aplicação quando o DOM estiver pronto
+        window.addEventListener('DOMContentLoaded', async () => {
+            const app = new App(CONFIG);
+            await app.init();
+        });
+    </script>
+</body>
+</html>

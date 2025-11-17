@@ -1,0 +1,23 @@
+# Logs
+logs/
+*.log
+
+# Node modules (se usar npm)
+node_modules/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Não ignorar dados/dados.csv (precisa estar no repositório para GitHub Pages)
+

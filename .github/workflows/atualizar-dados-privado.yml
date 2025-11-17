@@ -1,0 +1,49 @@
+name: Atualizar Dados CSV (Repositório Privado)
+
+# Versão otimizada para repositórios PRIVADOS
+# Usa menos minutos (executa a cada 30 minutos ao invés de 10)
+
+on:
+  schedule:
+    # Executa a cada 60 minutos (1 hora)
+    # Calculado: 24 execuções/dia × 30 dias × ~2 min = ~1.440 min/mês ✅ Dentro do limite de 2.000 min/mês
+    - cron: '0 * * * *'
+  workflow_dispatch: # Permite executar manualmente
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+        
+      - name: Configurar Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Baixar dados do Google Sheets
+        run: |
+          curl -L "https://docs.google.com/spreadsheets/d/1Md5fP17bXGEEmRXlbsTTo68F9ILROsAD9iPisUoNJ6g/export?format=csv&gid=1443492060" -o dados/dados.csv
+          
+      - name: Validar CSV
+        run: |
+          if [ ! -s dados/dados.csv ]; then
+            echo "Erro: CSV vazio ou não encontrado"
+            exit 1
+          fi
+          if grep -q "<!DOCTYPE" dados/dados.csv; then
+            echo "Erro: Resposta não é CSV válido"
+            exit 1
+          fi
+          echo "✅ CSV válido! Tamanho: $(wc -c < dados/dados.csv) bytes"
+          
+      - name: Commit e Push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add dados/dados.csv
+          git diff --staged --quiet || git commit -m "🔄 Atualizar dados CSV - $(date +'%Y-%m-%d %H:%M:%S')"
+          git push
+

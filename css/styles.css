@@ -1,0 +1,51 @@
+/* Estilos customizados complementando Tailwind */
+
+* {
+    box-sizing: border-box;
+}
+
+/* Animações e transições customizadas */
+.slide {
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-image img {
+    transition: opacity 0.3s ease-in-out;
+}
+
+.indicator {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-controls {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Estilos específicos para imagens e placeholders */
+.slide-image-placeholder svg {
+    opacity: 0.6;
+}
+
+/* Garantir que iframes do Google Drive ocupem todo o espaço */
+.slide-image iframe {
+    border-radius: 1rem;
+}
+
+/* Scrollbar customizada (se necessário) */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
